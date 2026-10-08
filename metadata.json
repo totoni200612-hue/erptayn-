@@ -1,0 +1,6 @@
+{
+  "name": "PlanoERP - Gestão & Planejamento da Produção",
+  "description": "Sistema integrado de planejamento de produção, controle de estoque de matéria-prima, pedidos e ordens de produção para pequenas e médias empresas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
