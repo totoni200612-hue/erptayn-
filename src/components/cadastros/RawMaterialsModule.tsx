@@ -19,7 +19,7 @@ interface RawMaterialsModuleProps {
   rawMaterials: RawMaterial[];
   suppliers: Supplier[];
   stockMovements: StockMovement[];
-  onSaveRawMaterial: (material: RawMaterial) => Promise<void>;
+  onSaveRawMaterial: (material: RawMaterial) => Promise<any>;
   onDeleteRawMaterial: (id: string) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, notes?: string) => Promise<void>;
 }

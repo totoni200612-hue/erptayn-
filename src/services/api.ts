@@ -17,7 +17,18 @@ const LOCAL_STORAGE_KEY = 'planoerp_database_cache';
 function getLocalFallback(): ERPDatabase {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (
+        parsed.settings &&
+        (!parsed.settings.technicalResponsible ||
+          !parsed.settings.technicalResponsible.name ||
+          !parsed.settings.technicalResponsible.name.includes('Tayná'))
+      ) {
+        parsed.settings.technicalResponsible = initialData.settings.technicalResponsible;
+      }
+      return parsed;
+    }
   } catch (e) {
     console.warn('Could not read from localStorage fallback', e);
   }
@@ -45,6 +56,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
       throw new Error(errorData.error || `Erro HTTP ${res.status}: ${res.statusText}`);
+    }
+
+    const contentType = res.headers.get('content-type');
+    if (contentType && !contentType.includes('application/json')) {
+      throw new Error('API retornou conteúdo não-JSON (ambiente estático)');
     }
 
     return (await res.json()) as T;

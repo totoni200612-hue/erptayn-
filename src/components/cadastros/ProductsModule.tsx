@@ -24,7 +24,7 @@ interface ProductsModuleProps {
   suppliers?: Supplier[];
   onSaveProduct: (product: Product) => Promise<void>;
   onDeleteProduct: (id: string) => Promise<void>;
-  onSaveRawMaterial?: (material: RawMaterial) => Promise<void>;
+  onSaveRawMaterial?: (material: RawMaterial) => Promise<RawMaterial | undefined | void>;
 }
 
 export const ProductsModule: React.FC<ProductsModuleProps> = ({
@@ -101,13 +101,17 @@ export const ProductsModule: React.FC<ProductsModuleProps> = ({
         updatedAt: new Date().toISOString(),
       };
 
+      let resolvedId = newId;
       if (onSaveRawMaterial) {
-        await onSaveRawMaterial(newMaterial);
+        const saved = await onSaveRawMaterial(newMaterial);
+        if (saved && saved.id) {
+          resolvedId = saved.id;
+        }
       }
 
       // Add directly to current BOM
       const newBomItem: BomItem = {
-        rawMaterialId: newId,
+        rawMaterialId: resolvedId,
         rawMaterialCode: newMaterial.code,
         rawMaterialName: newMaterial.name,
         unit: newMaterial.unit,

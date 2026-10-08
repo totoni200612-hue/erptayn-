@@ -32,6 +32,9 @@ export default function App() {
     setIsSyncing(true);
     try {
       const db = await api.getDatabase();
+      if (!db.settings.technicalResponsible?.name || !db.settings.technicalResponsible.name.includes('Tayná')) {
+        db.settings.technicalResponsible = initialData.settings.technicalResponsible;
+      }
       setData(db);
     } catch (err) {
       console.warn('Using local database state:', err);
@@ -89,7 +92,7 @@ export default function App() {
   };
 
   // ================= RAW MATERIALS =================
-  const handleSaveRawMaterial = async (material: RawMaterial) => {
+  const handleSaveRawMaterial = async (material: RawMaterial): Promise<RawMaterial | undefined> => {
     try {
       let saved: RawMaterial;
       if (material.id && data.rawMaterials.some((m) => m.id === material.id)) {
@@ -107,6 +110,7 @@ export default function App() {
         }));
         showNotification(`Matéria-prima "${saved.name}" cadastrada!`);
       }
+      return saved;
     } catch (err: any) {
       showNotification(`Erro ao salvar matéria-prima: ${err.message}`, 'error');
     }
